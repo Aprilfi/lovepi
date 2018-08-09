@@ -122,5 +122,14 @@
         </div>
     </div>
 </div>
+<script>
+    $.goup({
+        trigger: 100,
+        bottomOffset: 50,
+        locationOffset: 50,
+        title: '回到顶部',
+        titleAsText: true
+    });
+</script>
 
 <jsp:include page="footer.jsp"/>

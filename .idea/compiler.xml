@@ -9,8 +9,8 @@
         <module name="lovepi" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="lovepi" target="1.7" />
+    <bytecodeTargetLevel target="9">
+      <module name="lovepi" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

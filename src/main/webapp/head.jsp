@@ -28,12 +28,15 @@
     <!-- js -->
     <script src="bootstrap/Scripts/jquery-1.9.1.min.js"></script>
 
+    <script src="bootstrap/Scripts/goup/jquery.goup.js"></script>
+
     <script src="bootstrap/Scripts/bootstrap.min.js"></script>
     <script src="bootstrap/Scripts/main/pace.min.js"></script>
     <script src="bootstrap/Scripts/main/modernizr.custom.js"></script>
     <script type="text/javascript" src="bootstrap/Scripts/jquery.comment.js"></script>
 
     <script src="about/endcredits.js"></script>
+
 
 </head>
 <body>

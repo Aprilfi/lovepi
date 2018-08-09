@@ -7,6 +7,7 @@
     .box {
         margin-left: 60px;
         margin-top: 10px;
+        margin-bottom: 10px;
     }
     #slider dl dd a {
         margin-left: 60px;
