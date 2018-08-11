@@ -5,7 +5,7 @@
             obj.time = getNowDateFormat();
         }
 
-        var el = "<div class='comment-info'><header><img src='"+obj.img+"'></header><div class='comment-right'><h3>"+obj.replyName+"</h3>"
+        var el = "<div class='comment-info'><header><img src='"+obj.img+"'></header><div class='comment-right'><h2 style='visibility:hidden;display: none;'>" + obj.id + "</h2><h3>"+obj.replyName+"</h3>"
             +"<div class='comment-content-header'><span><i class='glyphicon glyphicon-time'></i>"+obj.time+"</span>";
 
         if(typeof(obj.address) != "undefined" && obj.browse != ""){
@@ -62,24 +62,59 @@
             if(content != ""){
                 var parentEl = $(this).parent().parent().parent().parent();
                 var obj = new Object();
-                obj.replyName="发送";
-                if(el.parent().parent().hasClass("reply")){
-                    console.log("1111");
-                    obj.beReplyName = el.parent().parent().find("a:first").text();
-                }else{
-                    console.log("2222");
-                    obj.beReplyName=parentEl.find("h3").text();
+                var name = checkName();
+                if (name != null && name != '') {
+                    obj.content=content;
+                    obj.time = getNowDateFormat();
+                    obj.replyName=name;
+                    obj.id=parentEl.find("h2").text();
+                    if(el.parent().parent().hasClass("reply")){
+                        obj.beReplyName = el.parent().parent().find("a:first").text();
+                        console.log("if:" + obj.beReplyName + ";id:" + obj.id);
+                        $.ajax({
+                            url: "/footPrint/listReplyAdd.do",
+                            type: "post",
+                            dataType: "json",
+                            data:{img:obj.id
+                                ,replyName:obj.replyName
+                                ,beReplyName:obj.beReplyName
+                                ,content:obj.content
+                                ,time:obj.time},
+                            success:function (result) {
+                                console.log("success");
+                            }
+
+                        });
+                    }else{
+                        obj.beReplyName=parentEl.find("h3").text();
+                        console.log("else:" + obj.beReplyName + ";id:" + obj.id + obj.content+obj.time);
+                        $.ajax({
+                            url: "/footPrint/listReplyAdd.do",
+                            type: "post",
+                            dataType: "json",
+                            data:{img:obj.id
+                                ,replyName:obj.replyName
+                                ,beReplyName:obj.beReplyName
+                                ,content:obj.content
+                                ,time:obj.time},
+                            success:function (result) {
+                                console.log("success");
+                            }
+
+                        });
+                    }
+
+                    var replyString = createReplyComment(obj);
+                    $(".replybox").remove();
+                    parentEl.find(".reply-list").append(replyString).find(".reply-list-btn:last").click(function(){
+                        replyClick($(this));
+                    });
+                }else {
+                    alert("昵称不能为空！")
                 }
-                obj.content=content;
-                obj.time = getNowDateFormat();
-                var replyString = createReplyComment(obj);
-                $(".replybox").remove();
-                parentEl.find(".reply-list").append(replyString).find(".reply-list-btn:last").click(function(){
-                    replyClick($(this));
-                    alert("test");
-                });
+
             }else{
-                alert("test");
+                alert("回复内容不能为空!");
             }
         });
     }
@@ -91,7 +126,6 @@
             add:""
         }
         var option = $.extend(defaults, options);
-        //鍔犺浇鏁版嵁
         if(option.data.length > 0){
             var dataList = option.data;
             var totalString = "";
@@ -124,6 +158,19 @@
             $(this).prepend(str).find(".reply-btn").click(function(){
                 replyClick($(this));
             });
+        }
+    }
+
+    function checkName() {
+        //判断session是否存在
+        if (window.sessionStorage["footPrintname"]) {
+            return window.sessionStorage.getItem("footPrintname");
+        }else {
+            var name = prompt("请输入一个昵称：");
+            if (name != null && name != '') {
+                window.sessionStorage["footPrintname"] = name;
+            }
+            return name;
         }
     }
 

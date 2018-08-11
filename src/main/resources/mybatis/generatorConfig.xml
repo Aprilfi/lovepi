@@ -114,7 +114,7 @@
             <!--<generatedKey column="id" sqlStatement="JDBC"/>-->
         <!--</table>-->
 
-        <table tableName="footprint" domainObjectName="FootPrint" enableCountByExample="false"
+        <table tableName="footprint_reply" domainObjectName="FootPrintReply" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="true"
                selectByExampleQueryId="false">
             <property name="my.isgen.usekeys" value="true"/>

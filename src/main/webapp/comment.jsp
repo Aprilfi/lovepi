@@ -3,11 +3,14 @@
 
 <%--评论区--%>
 <div class="container">
+            <jsp:include page="icon.jsp"/>
     <div class="commentbox">
+        <p style="margin-bottom: 5px;color: #31708f"><strong>Tips!</strong> 点击左上角可以更换头像哦。</p>
         <textarea id="content" class='form-control mytextarea' placeholder="来说几句吧......" rows='5'></textarea>
         <span class="textareaInput" style="color: red">0</span>/<span class="textareaTotal">200</span>
         <div class="btn btn-info pull-right" id="comment">评论</div>
     </div>
+
     <div class="comment-list">
 
     </div>
@@ -50,44 +53,62 @@
             success: function (result){
                 console.log(result.length);
                 for (var i = 0; i < result.length; i ++) {
-                    result[i]["replyBody"] = [];
+                    if (result[i]["replyBody"] == null) {
+                        result[i]["replyBody"] = [];
+                    }else {
+                        for (var k = 0; k < result[i]["replyBody"].length; k ++ ) {
+                            result[i]["replyBody"][k]["time"] = timeFormat(result[i]["replyBody"][k]["time"]);
+                        }
+                    }
                     result[i]["time"] = timeFormat(result[i]["time"]);
                 }
                 $(".comment-list").addCommentList({data:result,add:""});
                 $("#comment").click(function(){
-                    var name = prompt("请输入一个昵称","");
-                    $.ajax({
-                        url: "http://api.ip138.com/query/?ip=119.39.248.122&datatype=jsonp&token=fa84022a79043fb76e75f3901c1a6529",
-                        type: "get",
-                        dataType:"jsonp",  //数据格式设置为jsonp
-                        crossDomain: true,
-                        success:function(data){  //成功的回调函数
-                            if (data.ret.indexOf("ok") != -1) {
-                                var obj = new Object();
-                                obj.img="bootstrap/img/img.jpg";
-                                obj.replyName=name;
-                                obj.content=$("#content").val();
-                                obj.browse=data.data[2]+"-"+data.data[3];
-                                obj.osname=navigator.userAgent;
-                                obj.replyBody="";
-                                $.ajax({
-                                    url: "/footPrint/listAdd.do",
-                                    type: "post",
-                                    dataType: "json",
-                                    data: {img: obj.img, replyName: obj.replyName
-                                        , content: obj.content
-                                        , time: getNowDateFormat()
-                                        , address: obj.browse
-                                        , osname: obj.osname},
-                                    success: function () {
-                                        
+                    var name = checkName();
+                    var src = $(".my_pic")[0].src;
+                    var real_src = src.substring(src.indexOf('b'),src.length);
+                    if(name != null &&　name != '') {
+                        var content = $("#content").val();
+                        if (content != null && content != '') {
+                            $.ajax({
+                                url: "http://api.ip138.com/query/?ip=119.39.248.122&datatype=jsonp&token=fa84022a79043fb76e75f3901c1a6529",
+                                type: "get",
+                                dataType:"jsonp",  //数据格式设置为jsonp
+                                crossDomain: true,
+                                success:function(data){  //成功的回调函数
+                                    if (data.ret.indexOf("ok") != -1) {
+                                        var obj = new Object();
+                                        obj.img=real_src;
+                                        obj.replyName=name;
+                                        obj.content=content;
+                                        obj.browse=data.data[2]+"-"+data.data[3];
+                                        obj.osname=navigator.userAgent;
+                                        obj.replyBody="";
+                                        $.ajax({
+                                            url: "/footPrint/listAdd.do",
+                                            type: "post",
+                                            dataType: "json",
+                                            data: {img: obj.img, replyName: obj.replyName
+                                                , content: obj.content
+                                                , time: getNowDateFormat()
+                                                , address: obj.browse
+                                                , osname: obj.osname},
+                                            success: function (result) {
+                                            }
+                                        });
+                                        location.replace(location.href);
+                                        $(".comment-list").addCommentList({data:[],add:obj});
+                                        $("#content").val('');
                                     }
-                                });
-                                $(".comment-list").addCommentList({data:[],add:obj});
-                                $("#content").val('');
-                            }
+                                }
+                            });
+                        } else {
+                            alert("评论内容不能为空！")
                         }
-                    });
+
+                    } else {
+                        alert("昵称不能为空！")
+                    }
 
                 });
             }
@@ -127,6 +148,18 @@
                 return "0"+num;
             }else{
                 return num;
+            }
+        }
+        function checkName() {
+            //判断session是否存在
+            if (window.sessionStorage["footPrintname"]) {
+                return window.sessionStorage.getItem("footPrintname");
+            }else {
+                var name = prompt("请输入一个昵称：");
+                if (name != null && name != '') {
+                    window.sessionStorage["footPrintname"] = name;
+                }
+                return name;
             }
         }
 </script>

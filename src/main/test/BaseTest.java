@@ -1,6 +1,12 @@
 import com.lovepi.bean.FootPrint;
 import com.lovepi.bean.FootPrintExample;
+import com.lovepi.bean.FootPrintReply;
+import com.lovepi.bean.FootPrintReplyExample;
 import com.lovepi.dao.FootPrintMapper;
+import com.lovepi.dao.FootPrintReplyMapper;
+import com.lovepi.service.FootPrintReplyService;
+import com.lovepi.service.impl.FootPrintReplyServiceImpl;
+import com.sun.org.apache.xml.internal.security.keys.keyresolver.implementations.PrivateKeyResolver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +24,10 @@ import java.util.List;
 public class BaseTest {
 
     @Autowired
-    public FootPrintMapper footPrintMapper;
+    private FootPrintMapper footPrintMapper;
+
+    @Autowired
+    private FootPrintReplyMapper footPrintReplyMapper;
 
 
     @Test
@@ -30,6 +39,31 @@ public class BaseTest {
         for(FootPrint footPrint : printList) {
             System.out.printf("foorptint:%s;\n",footPrint.toString());
         }
+    }
+
+    @Test
+    public void listById() {
+        FootPrintReplyExample footPrintReplyExample = new FootPrintReplyExample();
+
+        footPrintReplyExample.createCriteria().andIdEqualTo(13);
+
+        List<FootPrintReply> footPrintReplies = footPrintReplyMapper.selectByExample(footPrintReplyExample);
+
+        System.out.println(footPrintReplies.size());
+
+        for(FootPrintReply footPrint : footPrintReplies) {
+            System.out.printf("foorptintreply:%s;\n",footPrint.toString());
+        }
+
+    }
+
+    @Test
+    public void test1() {
+        FootPrintReplyService footPrintReplyService = new FootPrintReplyServiceImpl();
+
+        List<FootPrintReply> footPrintReplies = footPrintReplyService.findByImg("12");
+
+        System.out.printf("%s:", footPrintReplies.get(0).toString());
     }
 
 }

@@ -1,6 +1,8 @@
 package com.lovepi.controller;
 
 import com.lovepi.bean.FootPrint;
+import com.lovepi.bean.FootPrintReply;
+import com.lovepi.service.FootPrintReplyService;
 import com.lovepi.service.FootPrintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -23,10 +25,27 @@ public class FootPrintController {
     @Autowired
     private FootPrintService footPrintService;
 
+    @Autowired
+    private FootPrintReplyService footPrintReplyService;
+
     @ResponseBody
     @RequestMapping("/list.do")
     public List<FootPrint> list() {
-        return footPrintService.list();
+
+        List<FootPrint> footPrints = footPrintService.list();
+
+        List<FootPrintReply> footPrintReplies = null;
+
+        for(int i = 0; i < footPrints.size(); i ++) {
+            footPrintReplies = findByImg(footPrints.get(i).getId().toString());
+            if(footPrintReplies.size() != 0) {
+                footPrints.get(i).setReplyBody(footPrintReplies);
+            }
+            System.out.println(footPrints.get(i).toString());
+        }
+
+
+        return footPrints;
     }
 
     @ResponseBody
@@ -39,6 +58,22 @@ public class FootPrintController {
             return "success";
         }
         return "failure";
+    }
+
+    @ResponseBody
+    @RequestMapping("listReplyAdd.do")
+    public String listReplyAdd(FootPrintReply footPrintReply) {
+        System.out.printf("footPrint:%s",footPrintReply.toString());
+        boolean state = footPrintReplyService.listAdd(footPrintReply);
+
+        if(state) {
+            return "success";
+        }
+        return "failure";
+    }
+
+    public List<FootPrintReply> findByImg(String id) {
+        return footPrintReplyService.findByImg(id);
     }
 
     //只需要加上下面这段即可，注意不能忘记注解

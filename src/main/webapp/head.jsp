@@ -24,6 +24,8 @@
 
     <link href="about/jumbotron-narrow.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="bootstrap/Content/icon.css"/>
+
 
     <!-- js -->
     <script src="bootstrap/Scripts/jquery-1.9.1.min.js"></script>
